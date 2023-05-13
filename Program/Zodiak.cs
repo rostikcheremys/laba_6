@@ -21,6 +21,7 @@ namespace Program
         {
             int month = date.Month;
             int day = date.Day;
+            
             switch (zodiacSign.ToLower())
             {
                 case "водолій":

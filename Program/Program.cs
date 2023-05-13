@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Program
@@ -10,7 +11,9 @@ namespace Program
         {
             for (int i = 0; i < people.Length; i++)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Введiть iнформацiю про людину №{i + 1}");
+                Console.ResetColor();
                 Console.Write("Прiзвище: ");
                 string lastName = Console.ReadLine();
 
@@ -22,7 +25,9 @@ namespace Program
 
                 while (!DateTime.TryParseExact(Console.ReadLine(), "dd MM yyyy", null, System.Globalization.DateTimeStyles.None, out birthDate))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Невiрний формат дати. Будь ласка, спробуйте ще раз!");
+                    Console.ResetColor();
                     Console.Write("Дата народження (DD/MM/YYYY): ");
                 }
 
@@ -31,14 +36,20 @@ namespace Program
 
                 if (!Zodiak.CheckZodiacSign(birthDate, zodiacSign))
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("На жаль, дата народження не вiдповідає знаку зодiаку!");
+                    Console.ResetColor();
                     Console.Write("Ви бажаєте змiнити дату або знак? (дата/знак/обидва): ");
+                    
                     string response = Console.ReadLine().ToLower();
 
                     while (response != "дата" && response != "знак" && response != "обидва")
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Невiрна вiдповiдь. Будь ласка, спробуйте ще раз!");
+                        Console.ResetColor();
                         Console.Write("Ви бажаєте змiнити дату або знак? (дата/знак/обидва): ");
+                        
                         response = Console.ReadLine().ToLower();
                     }
 
@@ -48,7 +59,9 @@ namespace Program
 
                         while (!DateTime.TryParse(Console.ReadLine(), out birthDate))
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("Невiрний формат дати. Будь ласка, спробуйте ще раз!");
+                            Console.ResetColor();
                             Console.Write("Нова дата народження (DD/MM/YYYY): ");
                         }
                     }
@@ -71,13 +84,17 @@ namespace Program
 
         private static void SortedListOfPeople(Zodiak[] people)
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Вiдсортований список людей:");
+            Console.ResetColor();
             
             Array.Sort(people, SortPeople);
             
             foreach (Zodiak person in people)
             {
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
+                Console.ResetColor();
             }
         }
 
@@ -112,22 +129,27 @@ namespace Program
             {
                 if (person.FirstName == search)
                 {
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
+                    Console.ResetColor();
+                    
                     found = true;
                 }
             }
 
             if (!found)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Людина з прiзвищем {search} не знайдена!");
+                Console.ResetColor();
             }
         }
 
-        public static void Main()
+        private static void Task(string textFile, string jsonFile)
         {
-            const string textFile = "zodiac.txt";
-            const string jsonFile = "zodiac.json";
-
+            Console.OutputEncoding = Encoding.GetEncoding(1251);
+            Console.InputEncoding = Encoding.GetEncoding(1251);
+            
             while (true)
             {
                 Console.Write("Введiть кiлькiсть людей: ");
@@ -140,7 +162,7 @@ namespace Program
                 DataEntry(people);
                 SortedListOfPeople(people);
 
-                Console.WriteLine("Введiть 1 для пошуку в Text File:\nВведiть 2 для пошуку в JSON File:\nВведіть 3 для пошуку в обох Files");
+                Console.WriteLine("Введiть 1 для пошуку в Text File:\nВведiть 2 для пошуку в JSON File:\nВведiть 3 для пошуку в обох Files:");
                 int choice = Convert.ToInt32(Console.ReadLine());
                 
                 switch (choice)
@@ -154,10 +176,16 @@ namespace Program
                         SearchPeopleByLastName(people);
                         break;
                     case 3:
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Пошук в Text File:");
+                        Console.ResetColor();
+                        
                         SearchPeopleByLastName(WritingToATextFile(people, textFile));
         
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Пошук в JSON File:");
+                        Console.ResetColor();
+                        
                         SearchPeopleByLastName(WritingToAJsonFile(people, jsonFile));
                         break;
                     default:
@@ -166,6 +194,13 @@ namespace Program
                 
                 Console.WriteLine("Введiть 0 для виходу з програми!");
             }
+        }
+        public static void Main()
+        {
+            const string textFile = "zodiac.txt";
+            const string jsonFile = "zodiac.json";
+            
+            Task(textFile, jsonFile);
         }
     }
 }

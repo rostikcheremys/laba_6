@@ -1,26 +1,14 @@
 [
   {
     "FirstName": "Черемис",
-    "LastName": "Марина",
-    "Sign": "лев",
-    "BirthDate": "1984-08-12T00:00:00"
-  },
-  {
-    "FirstName": "Ольховський",
-    "LastName": "Володя",
-    "Sign": "рак",
-    "BirthDate": "2004-07-11T00:00:00"
-  },
-  {
-    "FirstName": "Танюха",
-    "LastName": "Джан",
-    "Sign": "телець",
-    "BirthDate": "2005-05-15T00:00:00"
-  },
-  {
-    "FirstName": "Черемис",
     "LastName": "Ростислав",
     "Sign": "близнюки",
     "BirthDate": "2005-05-27T00:00:00"
+  },
+  {
+    "FirstName": "Ольховська",
+    "LastName": "Тетяна",
+    "Sign": "скорпіон",
+    "BirthDate": "2005-10-31T00:00:00"
   }
 ]
