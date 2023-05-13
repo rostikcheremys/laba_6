@@ -2,7 +2,7 @@ using System;
 
 namespace Program
 {
-    struct Zodiak
+    public struct Zodiak
     {
         public string FirstName;
         public string LastName;

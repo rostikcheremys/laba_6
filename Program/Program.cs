@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 
 namespace Program
-{
-    internal class Program
+{ 
+    public class Program
     {
         private static void DataEntry(Zodiak[] people) 
         {
@@ -118,6 +119,18 @@ namespace Program
 
             return people;
         }
+
+        private static Zodiak[] WritingToAXmlFile(Zodiak[] people, string xmlFile)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Zodiak[]));
+            
+            using (StreamWriter writer = new StreamWriter(xmlFile))
+            {
+                serializer.Serialize(writer, people);
+            }
+
+            return people;
+        }
         
         private static void SearchPeopleByLastName(Zodiak[] people)
         {
@@ -145,24 +158,12 @@ namespace Program
             }
         }
 
-        private static void Task(string textFile, string jsonFile)
+        private static void Choice(Zodiak[] people, string textFile, string jsonFile, string xmlFile)
         {
-            Console.OutputEncoding = Encoding.GetEncoding(1251);
-            Console.InputEncoding = Encoding.GetEncoding(1251);
-            
-            while (true)
-            {
-                Console.Write("Введiть кiлькiсть людей: ");
-                int numberPeople = Convert.ToInt32(Console.ReadLine());
-                
-                if (numberPeople == 0) break;
-                
-                Zodiak[] people = new Zodiak[numberPeople];
-    
-                DataEntry(people);
-                SortedListOfPeople(people);
-
-                Console.WriteLine("Введiть 1 для пошуку в Text File:\nВведiть 2 для пошуку в JSON File:\nВведiть 3 для пошуку в обох Files:");
+            Console.WriteLine("Введiть 1 для пошуку в Text File:\n" +
+                                  "Введiть 2 для пошуку в JSON File:\n" +
+                                  "Введiть 3 для пошуку в XMl File:\n" +
+                                  "Введiть 4 для пошуку в усіх Files");
                 int choice = Convert.ToInt32(Console.ReadLine());
                 
                 switch (choice)
@@ -176,21 +177,47 @@ namespace Program
                         SearchPeopleByLastName(people);
                         break;
                     case 3:
+                        WritingToAXmlFile(people, xmlFile);
+                        SearchPeopleByLastName(people);
+                        break;
+                    case 4:
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Пошук в Text File:");
                         Console.ResetColor();
-                        
                         SearchPeopleByLastName(WritingToATextFile(people, textFile));
         
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Пошук в JSON File:");
                         Console.ResetColor();
-                        
                         SearchPeopleByLastName(WritingToAJsonFile(people, jsonFile));
+                        
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Пошук в XML File:");
+                        Console.ResetColor();
+                        SearchPeopleByLastName(WritingToAXmlFile(people, xmlFile));
                         break;
                     default:
                         return;
                 }
+        }
+        
+        private static void Task(string textFile, string jsonFile, string xmlFile)
+        {
+            Console.OutputEncoding = Encoding.GetEncoding(1251);
+            Console.InputEncoding = Encoding.GetEncoding(1251);
+
+            while (true)
+            {
+                Console.Write("Введiть кiлькiсть людей: ");
+                int numberPeople = Convert.ToInt32(Console.ReadLine());
+
+                if (numberPeople == 0) break;
+
+                Zodiak[] people = new Zodiak[numberPeople];
+
+                DataEntry(people);
+                SortedListOfPeople(people);
+                Choice(people, textFile, jsonFile, xmlFile);
                 
                 Console.WriteLine("Введiть 0 для виходу з програми!");
             }
@@ -199,8 +226,9 @@ namespace Program
         {
             const string textFile = "zodiac.txt";
             const string jsonFile = "zodiac.json";
+            const string xmlFile = "zodiac.xml";
             
-            Task(textFile, jsonFile);
+            Task(textFile, jsonFile, xmlFile);
         }
     }
 }

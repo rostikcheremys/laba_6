@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfZodiak xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Zodiak>
+    <FirstName>Черемис</FirstName>
+    <LastName>Ростислав</LastName>
+    <Sign>близнюки</Sign>
+    <BirthDate>2005-05-27T00:00:00</BirthDate>
+  </Zodiak>
+  <Zodiak>
+    <FirstName>Глущенко</FirstName>
+    <LastName>Євген</LastName>
+    <Sign>близнюки</Sign>
+    <BirthDate>2005-06-07T00:00:00</BirthDate>
+  </Zodiak>
+  <Zodiak>
+    <FirstName>Андрончик</FirstName>
+    <LastName>Гліб</LastName>
+    <Sign>рак</Sign>
+    <BirthDate>2005-07-10T00:00:00</BirthDate>
+  </Zodiak>
+</ArrayOfZodiak>
