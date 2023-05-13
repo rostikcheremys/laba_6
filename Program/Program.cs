@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Program
 {
@@ -68,14 +69,20 @@ namespace Program
             return first.BirthDate.CompareTo(second.BirthDate);
         }
 
-        private static void SortedListOfPeople(Zodiak[] people, string textFile)
+        private static void SortedListOfPeople(Zodiak[] people)
         {
             Console.WriteLine("Вiдсортований список людей:");
+            
+            Array.Sort(people, SortPeople);
+            
             foreach (Zodiak person in people)
             {
                 Console.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
             }
+        }
 
+        private static Zodiak[] WritingToATextFile(Zodiak[] people, string textFile)
+        {
             using (StreamWriter writer = new StreamWriter(textFile))
             {
                 foreach (Zodiak person in people)
@@ -83,17 +90,27 @@ namespace Program
                     writer.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
                 }
             }
+
+            return people;
+        }
+
+        private static Zodiak[] WritingToAJsonFile(Zodiak[] people, string jsonFile)
+        {
+            string json = JsonConvert.SerializeObject(people, Formatting.Indented);
+            File.WriteAllText(jsonFile, json);
+
+            return people;
         }
         
         private static void SearchPeopleByLastName(Zodiak[] people)
         {
             Console.Write("Введiть прiзвище людини, яку шукаєте: ");
-            string searchLastName = Console.ReadLine();
+            string search = Console.ReadLine();
             bool found = false;
 
             foreach (Zodiak person in people)
             {
-                if (person.FirstName == searchLastName)
+                if (person.FirstName == search)
                 {
                     Console.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
                     found = true;
@@ -102,13 +119,14 @@ namespace Program
 
             if (!found)
             {
-                Console.WriteLine($"Людина з прiзвищем {searchLastName} не знайдена!");
+                Console.WriteLine($"Людина з прiзвищем {search} не знайдена!");
             }
         }
 
         public static void Main()
         {
             const string textFile = "zodiac.txt";
+            const string jsonFile = "zodiac.json";
 
             while (true)
             {
@@ -120,12 +138,31 @@ namespace Program
                 Zodiak[] people = new Zodiak[numberPeople];
     
                 DataEntry(people);
+                SortedListOfPeople(people);
 
-                Array.Sort(people, SortPeople);
+                Console.WriteLine("Введiть 1 для пошуку в Text File:\nВведiть 2 для пошуку в JSON File:\nВведіть 3 для пошуку в обох Files");
+                int choice = Convert.ToInt32(Console.ReadLine());
                 
-                SortedListOfPeople(people, textFile);
-    
-                SearchPeopleByLastName(people);
+                switch (choice)
+                {
+                    case 1:
+                        WritingToATextFile(people, textFile);
+                        SearchPeopleByLastName(people);
+                        break;
+                    case 2:
+                        WritingToAJsonFile(people, jsonFile);
+                        SearchPeopleByLastName(people);
+                        break;
+                    case 3:
+                        Console.WriteLine("Пошук в Text File:");
+                        SearchPeopleByLastName(WritingToATextFile(people, textFile));
+        
+                        Console.WriteLine("Пошук в JSON File:");
+                        SearchPeopleByLastName(WritingToAJsonFile(people, jsonFile));
+                        break;
+                    default:
+                        return;
+                }
                 
                 Console.WriteLine("Введiть 0 для виходу з програми!");
             }
