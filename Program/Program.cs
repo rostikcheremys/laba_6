@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace Program
 { 
@@ -78,9 +79,62 @@ namespace Program
             }
         }
         
-        private static int SortPeople(Zodiak first, Zodiak second)
+        private static void SortPeople(Zodiak[] people)
         {
-            return first.BirthDate.CompareTo(second.BirthDate);
+            Console.Write("Виберіть метод сортування:\n1 за прізвищем, 2 за ім'ям, 3 за датою, 4 за знаком зодіаку:");
+
+            int method = Convert.ToInt32(Console.ReadLine());
+
+            switch (method)
+            {
+                case 1:
+                    Array.Sort(people, new LastNameComparer());
+                    break;
+                case 2:
+                    Array.Sort(people, new FirstNameComparer());
+                    break;
+                case 3:
+                    Array.Sort(people, new BirthDateComparer());
+                    break;
+                case 4:
+                    Array.Sort(people, new ZodiacSignComparer()); 
+                    break;
+                default:
+                    Console.WriteLine("Невірний вибір методу сортування");
+                    return;
+            }
+        }
+
+        class LastNameComparer : IComparer<Zodiak>
+        {
+            public int Compare(Zodiak first, Zodiak second)
+            {
+                return string.Compare(first.LastName, second.LastName, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        class FirstNameComparer : IComparer<Zodiak>
+        {
+            public int Compare(Zodiak first, Zodiak second)
+            {
+                return string.Compare(first.FirstName, second.FirstName, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        class BirthDateComparer : IComparer<Zodiak>
+        {
+            public int Compare(Zodiak first, Zodiak second)
+            {
+                return first.BirthDate.CompareTo(second.BirthDate);
+            }
+        }
+
+        class ZodiacSignComparer : IComparer<Zodiak>
+        {
+            public int Compare(Zodiak first, Zodiak second)
+            {
+                return string.Compare(first.Sign, second.Sign, StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         private static void SortedListOfPeople(Zodiak[] people)
@@ -88,13 +142,13 @@ namespace Program
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Вiдсортований список людей:");
             Console.ResetColor();
-            
-            Array.Sort(people, SortPeople);
+
+            SortPeople(people);
             
             foreach (Zodiak person in people)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
+                Console.WriteLine($"{person.LastName} {person.FirstName} {person.Sign} {person.BirthDate:dd MM yyyy}");
                 Console.ResetColor();
             }
         }
@@ -105,7 +159,7 @@ namespace Program
             {
                 foreach (Zodiak person in people)
                 {
-                    writer.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
+                    writer.WriteLine($"{person.LastName} {person.FirstName} {person.Sign} {person.BirthDate:dd MM yyyy}");
                 }
             }
 
@@ -143,7 +197,7 @@ namespace Program
                 if (person.FirstName == search)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine($"{person.FirstName} {person.LastName} {person.Sign} {person.BirthDate:dd MM yyyy}");
+                    Console.WriteLine($"{person.LastName} {person.FirstName} {person.Sign} {person.BirthDate:dd MM yyyy}");
                     Console.ResetColor();
                     
                     found = true;
@@ -164,41 +218,42 @@ namespace Program
                                   "Введiть 2 для пошуку в JSON File:\n" +
                                   "Введiть 3 для пошуку в XMl File:\n" +
                                   "Введiть 4 для пошуку в усіх Files");
-                int choice = Convert.ToInt32(Console.ReadLine());
+            
+            int choice = Convert.ToInt32(Console.ReadLine());
                 
-                switch (choice)
-                {
-                    case 1:
-                        WritingToATextFile(people, textFile);
-                        SearchPeopleByLastName(people);
-                        break;
-                    case 2:
-                        WritingToAJsonFile(people, jsonFile);
-                        SearchPeopleByLastName(people);
-                        break;
-                    case 3:
-                        WritingToAXmlFile(people, xmlFile);
-                        SearchPeopleByLastName(people);
-                        break;
-                    case 4:
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Пошук в Text File:");
-                        Console.ResetColor();
-                        SearchPeopleByLastName(WritingToATextFile(people, textFile));
+            switch (choice)
+            {
+                case 1:
+                    WritingToATextFile(people, textFile);
+                    SearchPeopleByLastName(people);
+                    break;
+                case 2:
+                    WritingToAJsonFile(people, jsonFile);
+                    SearchPeopleByLastName(people);
+                    break;
+                case 3:
+                    WritingToAXmlFile(people, xmlFile);
+                    SearchPeopleByLastName(people);
+                    break;
+                case 4:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Пошук в Text File:");
+                    Console.ResetColor();
+                    SearchPeopleByLastName(WritingToATextFile(people, textFile));
         
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Пошук в JSON File:");
-                        Console.ResetColor();
-                        SearchPeopleByLastName(WritingToAJsonFile(people, jsonFile));
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Пошук в JSON File:");
+                    Console.ResetColor();
+                    SearchPeopleByLastName(WritingToAJsonFile(people, jsonFile));
                         
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Пошук в XML File:");
-                        Console.ResetColor();
-                        SearchPeopleByLastName(WritingToAXmlFile(people, xmlFile));
-                        break;
-                    default:
-                        return;
-                }
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Пошук в XML File:");
+                    Console.ResetColor();
+                    SearchPeopleByLastName(WritingToAXmlFile(people, xmlFile));
+                    break;
+                default:
+                    return;
+            }
         }
         
         private static void Task(string textFile, string jsonFile, string xmlFile)

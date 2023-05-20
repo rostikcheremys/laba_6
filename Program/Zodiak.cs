@@ -4,15 +4,15 @@ namespace Program
 {
     public struct Zodiak
     {
-        public string FirstName;
         public string LastName;
+        public string FirstName;
         public string Sign;
         public DateTime BirthDate;
 
-        public Zodiak(string firstName, string lastName, string zodiacSign, DateTime birthDate)
+        public Zodiak(string lastName, string firstName, string zodiacSign, DateTime birthDate)
         {
-            FirstName = firstName;
             LastName = lastName;
+            FirstName = firstName;
             Sign = zodiacSign;
             BirthDate = birthDate;
         }
